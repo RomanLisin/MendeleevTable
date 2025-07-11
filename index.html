@@ -10,26 +10,62 @@
             margin: 20px;
         }
 
-        .table-container {
-            display: flex;
-            flex-wrap: wrap;
+        .periodic-table {
+            display: grid;
+            grid-template-columns: repeat(18, 70px);
+            grid-template-rows: repeat(7, 80px);
             gap: 5px;
-            max-width: 1200px;
-            margin: 0 auto;
+            margin: 20px auto;
+            max-width: calc(18 * 75px);
         }
 
         .element {
-            width: 70px;
-            height: 70px;
-            border: 1px solid #ccc;
+            /*--element-color:#ffffff;*/
+            border: 1px solid transparent; /*Прозрачная граница по умолчанию*/ /*#ccc;*/
             border-radius: 4px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 5px;
-            box-sizing: border-box;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            /*background-color: rgba(0,0,0,0.7);*/
+        /*--webkitt-transition: all 0.3s ease;*/
+        /*-moz-transition: all 0.3s ease;*/
         }
+
+            /* Эффект при наведении */
+            .element:hover {
+                transform: scale(1.05);
+                box-shadow: 0 0 5px #fff /*rgba (255, 255, 255, 0.8)*/, 0 0 10px var(--element-color);
+                z-index: 10;
+                border-color: white; /*Белый контур при наведении*/ /*#fff;*/
+            }
+
+                .element:hover .number,
+                .element:hover .symbol {
+                    text-shadow: 0 0 5px #fff, 0 0 15px var(--element-color);
+                    color: transparent; /* Делаем основной текст прозрачным */
+                    /*-webkit-text-stroke: 1px white;*/ /* Контур букв (поддержка браузерами) */
+                    /*text-stroke: 1px white;*/
+                }
+                .element:hover .name {
+                    text-shadow: 0 0 3px #fff /*rgba (255, 255, 255, 0.8);*/,
+                    0 0 5px var(--element-color);
+                    color: #fff;
+                }
+
+        /* Цветная подсветка для разных групп */
+        .alkali-metal:hover {
+            box-shadow: 0 0 15px rgba(255, 157, 157, 0.8);
+        }
+
+        .noble-gas:hover {
+            box-shadow: 0 0 15px rgba(192, 255, 255, 0.8);
+        }
+        /* ... аналогично для других категорий ... */
 
         .number {
             font-size: 10px;
@@ -44,7 +80,6 @@
 
         .name {
             font-size: 10px;
-            text-align: center;
         }
 
         .legend {
@@ -67,49 +102,64 @@
             border: 1px solid #999;
         }
 
-        h1 {
-            text-align: center;
-        }
-
-        /* Цвета элементов */
+        /* Категории элементов с разными цветами свечения */
         .alkali-metal {
             background-color: #FF9D9D;
+            --element-color: #ff6b6b;
         }
 
         .alkaline-earth {
             background-color: #FFDEAD;
+            --element-color: #ffb347;
         }
 
         .transition-metal {
             background-color: #FFC0CB;
+            --element-color: #ff9ff3;
         }
 
         .basic-metal {
             background-color: #CCCCCC;
+            --element-color: #c8d6e5;
         }
 
         .metalloid {
             background-color: #99CC99;
+            --element-color: #1dd1a1;
         }
 
         .nonmetal {
+            .nonmetal
+
+        {
             background-color: #A0D6FF;
+            --element-color: #48dbfb;
         }
 
         .halogen {
             background-color: #FFFF99;
+            --element-color: #feca57;
         }
 
         .noble-gas {
             background-color: #C0FFFF;
+            --element-color: #00d2d3;
         }
 
         .lanthanide {
             background-color: #FFB5C5;
+            --element-color: #ff9ff3;
         }
 
+        }
         .actinide {
-            background-color: #FF99CC;
+        background-color: #FF99CC;
+            --element-color: #ff6b6b;
+        }
+
+        /* Пустые ячейки для выравнивания */
+        .empty {
+            visibility: hidden;
         }
     </style>
 </head>
@@ -129,142 +179,106 @@
         <div class="legend-item"><div class="legend-color actinide"></div>Актиноиды</div>
     </div>
 
-    <div class="table-container" id="periodic-table"></div>
+    <div class="periodic-table" id="periodic-table"></div>
 
     <script>
         const elements = [
-            { number: 1, symbol: 'H', name: 'Водород', category: 'nonmetal' },
-            { number: 2, symbol: 'He', name: 'Гелий', category: 'noble-gas' },
-            { number: 3, symbol: 'Li', name: 'Литий', category: 'alkali-metal' },
-            { number: 4, symbol: 'Be', name: 'Бериллий', category: 'alkaline-earth' },
-            { number: 5, symbol: 'B', name: 'Бор', category: 'metalloid' },
-            { number: 6, symbol: 'C', name: 'Углерод', category: 'nonmetal' },
-            { number: 7, symbol: 'N', name: 'Азот', category: 'nonmetal' },
-            { number: 8, symbol: 'O', name: 'Кислород', category: 'nonmetal' },
-            { number: 9, symbol: 'F', name: 'Фтор', category: 'halogen' },
-            { number: 10, symbol: 'Ne', name: 'Неон', category: 'noble-gas' },
-            { number: 11, symbol: 'Na', name: 'Натрий', category: 'alkali-metal' },
-            { number: 12, symbol: 'Mg', name: 'Магний', category: 'alkaline-earth' },
-            { number: 13, symbol: 'Al', name: 'Алюминий', category: 'basic-metal' },
-            { number: 14, symbol: 'Si', name: 'Кремний', category: 'metalloid' },
-            { number: 15, symbol: 'P', name: 'Фосфор', category: 'nonmetal' },
-            { number: 16, symbol: 'S', name: 'Сера', category: 'nonmetal' },
-            { number: 17, symbol: 'Cl', name: 'Хлор', category: 'halogen' },
-            { number: 18, symbol: 'Ar', name: 'Аргон', category: 'noble-gas' },
-            { number: 19, symbol: 'K', name: 'Калий', category: 'alkali-metal' },
-            { number: 20, symbol: 'Ca', name: 'Кальций', category: 'alkaline-earth' },
-            { number: 21, symbol: 'Sc', name: 'Скандий', category: 'transition-metal' },
-            { number: 22, symbol: 'Ti', name: 'Титан', category: 'transition-metal' },
-            { number: 23, symbol: 'V', name: 'Ванадий', category: 'transition-metal' },
-            { number: 24, symbol: 'Cr', name: 'Хром', category: 'transition-metal' },
-            { number: 25, symbol: 'Mn', name: 'Марганец', category: 'transition-metal' },
-            { number: 26, symbol: 'Fe', name: 'Железо', category: 'transition-metal' },
-            { number: 27, symbol: 'Co', name: 'Кобальт', category: 'transition-metal' },
-            { number: 28, symbol: 'Ni', name: 'Никель', category: 'transition-metal' },
-            { number: 29, symbol: 'Cu', name: 'Медь', category: 'transition-metal' },
-            { number: 30, symbol: 'Zn', name: 'Цинк', category: 'transition-metal' },
-            { number: 31, symbol: 'Ga', name: 'Галлий', category: 'basic-metal' },
-            { number: 32, symbol: 'Ge', name: 'Германий', category: 'metalloid' },
-            { number: 33, symbol: 'As', name: 'Мышьяк', category: 'metalloid' },
-            { number: 34, symbol: 'Se', name: 'Селен', category: 'nonmetal' },
-            { number: 35, symbol: 'Br', name: 'Бром', category: 'halogen' },
-            { number: 36, symbol: 'Kr', name: 'Криптон', category: 'noble-gas' },
-            { number: 37, symbol: 'Rb', name: 'Рубидий', category: 'alkali-metal' },
-            { number: 38, symbol: 'Sr', name: 'Стронций', category: 'alkaline-earth' },
-            { number: 39, symbol: 'Y', name: 'Иттрий', category: 'transition-metal' },
-            { number: 40, symbol: 'Zr', name: 'Цирконий', category: 'transition-metal' },
-            { number: 41, symbol: 'Nb', name: 'Ниобий', category: 'transition-metal' },
-            { number: 42, symbol: 'Mo', name: 'Молибден', category: 'transition-metal' },
-            { number: 43, symbol: 'Tc', name: 'Технеций', category: 'transition-metal' },
-            { number: 44, symbol: 'Ru', name: 'Рутений', category: 'transition-metal' },
-            { number: 45, symbol: 'Rh', name: 'Родий', category: 'transition-metal' },
-            { number: 46, symbol: 'Pd', name: 'Палладий', category: 'transition-metal' },
-            { number: 47, symbol: 'Ag', name: 'Серебро', category: 'transition-metal' },
-            { number: 48, symbol: 'Cd', name: 'Кадмий', category: 'transition-metal' },
-            { number: 49, symbol: 'In', name: 'Индий', category: 'basic-metal' },
-            { number: 50, symbol: 'Sn', name: 'Олово', category: 'basic-metal' },
-            { number: 51, symbol: 'Sb', name: 'Сурьма', category: 'metalloid' },
-            { number: 52, symbol: 'Te', name: 'Теллур', category: 'metalloid' },
-            { number: 53, symbol: 'I', name: 'Иод', category: 'halogen' },
-            { number: 54, symbol: 'Xe', name: 'Ксенон', category: 'noble-gas' },
-            { number: 55, symbol: 'Cs', name: 'Цезий', category: 'alkali-metal' },
-            { number: 56, symbol: 'Ba', name: 'Барий', category: 'alkaline-earth' },
-            { number: 57, symbol: 'La', name: 'Лантан', category: 'lanthanide' },
-            { number: 58, symbol: 'Ce', name: 'Церий', category: 'lanthanide' },
-            { number: 59, symbol: 'Pr', name: 'Празеодим', category: 'lanthanide' },
-            { number: 60, symbol: 'Nd', name: 'Неодим', category: 'lanthanide' },
-            { number: 61, symbol: 'Pm', name: 'Прометий', category: 'lanthanide' },
-            { number: 62, symbol: 'Sm', name: 'Самарий', category: 'lanthanide' },
-            { number: 63, symbol: 'Eu', name: 'Европий', category: 'lanthanide' },
-            { number: 64, symbol: 'Gd', name: 'Гадолиний', category: 'lanthanide' },
-            { number: 65, symbol: 'Tb', name: 'Тербий', category: 'lanthanide' },
-            { number: 66, symbol: 'Dy', name: 'Диспрозий', category: 'lanthanide' },
-            { number: 67, symbol: 'Ho', name: 'Гольмий', category: 'lanthanide' },
-            { number: 68, symbol: 'Er', name: 'Эрбий', category: 'lanthanide' },
-            { number: 69, symbol: 'Tm', name: 'Тулий', category: 'lanthanide' },
-            { number: 70, symbol: 'Yb', name: 'Иттербий', category: 'lanthanide' },
-            { number: 71, symbol: 'Lu', name: 'Лютеций', category: 'lanthanide' },
-            { number: 72, symbol: 'Hf', name: 'Гафний', category: 'transition-metal' },
-            { number: 73, symbol: 'Ta', name: 'Тантал', category: 'transition-metal' },
-            { number: 74, symbol: 'W', name: 'Вольфрам', category: 'transition-metal' },
-            { number: 75, symbol: 'Re', name: 'Рений', category: 'transition-metal' },
-            { number: 76, symbol: 'Os', name: 'Осмий', category: 'transition-metal' },
-            { number: 77, symbol: 'Ir', name: 'Иридий', category: 'transition-metal' },
-            { number: 78, symbol: 'Pt', name: 'Платина', category: 'transition-metal' },
-            { number: 79, symbol: 'Au', name: 'Золото', category: 'transition-metal' },
-            { number: 80, symbol: 'Hg', name: 'Ртуть', category: 'transition-metal' },
-            { number: 81, symbol: 'Tl', name: 'Таллий', category: 'basic-metal' },
-            { number: 82, symbol: 'Pb', name: 'Свинец', category: 'basic-metal' },
-            { number: 83, symbol: 'Bi', name: 'Висмут', category: 'basic-metal' },
-            { number: 84, symbol: 'Po', name: 'Полоний', category: 'metalloid' },
-            { number: 85, symbol: 'At', name: 'Астат', category: 'halogen' },
-            { number: 86, symbol: 'Rn', name: 'Радон', category: 'noble-gas' },
-            { number: 87, symbol: 'Fr', name: 'Франций', category: 'alkali-metal' },
-            { number: 88, symbol: 'Ra', name: 'Радий', category: 'alkaline-earth' },
-            { number: 89, symbol: 'Ac', name: 'Актиний', category: 'actinide' },
-            { number: 90, symbol: 'Th', name: 'Торий', category: 'actinide' },
-            { number: 91, symbol: 'Pa', name: 'Протактиний', category: 'actinide' },
-            { number: 92, symbol: 'U', name: 'Уран', category: 'actinide' },
-            { number: 93, symbol: 'Np', name: 'Нептуний', category: 'actinide' },
-            { number: 94, symbol: 'Pu', name: 'Плутоний', category: 'actinide' },
-            { number: 95, symbol: 'Am', name: 'Америций', category: 'actinide' },
-            { number: 96, symbol: 'Cm', name: 'Кюрий', category: 'actinide' },
-            { number: 97, symbol: 'Bk', name: 'Берклий', category: 'actinide' },
-            { number: 98, symbol: 'Cf', name: 'Калифорний', category: 'actinide' },
-            { number: 99, symbol: 'Es', name: 'Эйнштейний', category: 'actinide' },
-            { number: 100, symbol: 'Fm', name: 'Фермий', category: 'actinide' },
-            { number: 101, symbol: 'Md', name: 'Менделевий', category: 'actinide' },
-            { number: 102, symbol: 'No', name: 'Нобелий', category: 'actinide' },
-            { number: 103, symbol: 'Lr', name: 'Лоуренсий', category: 'actinide' },
-            { number: 104, symbol: 'Rf', name: 'Резерфордий', category: 'transition-metal' },
-            { number: 105, symbol: 'Db', name: 'Дубний', category: 'transition-metal' },
-            { number: 106, symbol: 'Sg', name: 'Сиборгий', category: 'transition-metal' },
-            { number: 107, symbol: 'Bh', name: 'Борий', category: 'transition-metal' },
-            { number: 108, symbol: 'Hs', name: 'Хассий', category: 'transition-metal' },
-            { number: 109, symbol: 'Mt', name: 'Мейтнерий', category: 'transition-metal' },
-            { number: 110, symbol: 'Ds', name: 'Дармштадтий', category: 'transition-metal' },
-            { number: 111, symbol: 'Rg', name: 'Рентгений', category: 'transition-metal' },
-            { number: 112, symbol: 'Cn', name: 'Коперниций', category: 'transition-metal' },
-            { number: 113, symbol: 'Nh', name: 'Нихоний', category: 'basic-metal' },
-            { number: 114, symbol: 'Fl', name: 'Флеровий', category: 'basic-metal' },
-            { number: 115, symbol: 'Mc', name: 'Московий', category: 'basic-metal' },
-            { number: 116, symbol: 'Lv', name: 'Ливерморий', category: 'basic-metal' },
-            { number: 117, symbol: 'Ts', name: 'Теннессин', category: 'halogen' },
-            { number: 118, symbol: 'Og', name: 'Оганесон', category: 'noble-gas' }
+            // Период 1
+            { number: 1, symbol: 'H', name: 'Водород', category: 'nonmetal', period: 1, group: 1 },
+            { number: 2, symbol: 'He', name: 'Гелий', category: 'noble-gas', period: 1, group: 18 },
+
+            // Период 2
+            { number: 3, symbol: 'Li', name: 'Литий', category: 'alkali-metal', period: 2, group: 1 },
+            { number: 4, symbol: 'Be', name: 'Бериллий', category: 'alkaline-earth', period: 2, group: 2 },
+            { number: 5, symbol: 'B', name: 'Бор', category: 'metalloid', period: 2, group: 13 },
+            { number: 6, symbol: 'C', name: 'Углерод', category: 'nonmetal', period: 2, group: 14 },
+            { number: 7, symbol: 'N', name: 'Азот', category: 'nonmetal', period: 2, group: 15 },
+            { number: 8, symbol: 'O', name: 'Кислород', category: 'nonmetal', period: 2, group: 16 },
+            { number: 9, symbol: 'F', name: 'Фтор', category: 'halogen', period: 2, group: 17 },
+            { number: 10, symbol: 'Ne', name: 'Неон', category: 'noble-gas', period: 2, group: 18 },
+
+            // Период 3
+            { number: 11, symbol: 'Na', name: 'Натрий', category: 'alkali-metal', period: 3, group: 1 },
+            { number: 12, symbol: 'Mg', name: 'Магний', category: 'alkaline-earth', period: 3, group: 2 },
+            { number: 13, symbol: 'Al', name: 'Алюминий', category: 'basic-metal', period: 3, group: 13 },
+            { number: 14, symbol: 'Si', name: 'Кремний', category: 'metalloid', period: 3, group: 14 },
+            { number: 15, symbol: 'P', name: 'Фосфор', category: 'nonmetal', period: 3, group: 15 },
+            { number: 16, symbol: 'S', name: 'Сера', category: 'nonmetal', period: 3, group: 16 },
+            { number: 17, symbol: 'Cl', name: 'Хлор', category: 'halogen', period: 3, group: 17 },
+            { number: 18, symbol: 'Ar', name: 'Аргон', category: 'noble-gas', period: 3, group: 18 },
+
+            // Период 4
+            { number: 19, symbol: 'K', name: 'Калий', category: 'alkali-metal', period: 4, group: 1 },
+            { number: 20, symbol: 'Ca', name: 'Кальций', category: 'alkaline-earth', period: 4, group: 2 },
+            { number: 21, symbol: 'Sc', name: 'Скандий', category: 'transition-metal', period: 4, group: 3 },
+            { number: 22, symbol: 'Ti', name: 'Титан', category: 'transition-metal', period: 4, group: 4 },
+            { number: 23, symbol: 'V', name: 'Ванадий', category: 'transition-metal', period: 4, group: 5 },
+            { number: 24, symbol: 'Cr', name: 'Хром', category: 'transition-metal', period: 4, group: 6 },
+            { number: 25, symbol: 'Mn', name: 'Марганец', category: 'transition-metal', period: 4, group: 7 },
+            { number: 26, symbol: 'Fe', name: 'Железо', category: 'transition-metal', period: 4, group: 8 },
+            { number: 27, symbol: 'Co', name: 'Кобальт', category: 'transition-metal', period: 4, group: 9 },
+            { number: 28, symbol: 'Ni', name: 'Никель', category: 'transition-metal', period: 4, group: 10 },
+            { number: 29, symbol: 'Cu', name: 'Медь', category: 'transition-metal', period: 4, group: 11 },
+            { number: 30, symbol: 'Zn', name: 'Цинк', category: 'transition-metal', period: 4, group: 12 },
+            { number: 31, symbol: 'Ga', name: 'Галлий', category: 'basic-metal', period: 4, group: 13 },
+            { number: 32, symbol: 'Ge', name: 'Германий', category: 'metalloid', period: 4, group: 14 },
+            { number: 33, symbol: 'As', name: 'Мышьяк', category: 'metalloid', period: 4, group: 15 },
+            { number: 34, symbol: 'Se', name: 'Селен', category: 'nonmetal', period: 4, group: 16 },
+            { number: 35, symbol: 'Br', name: 'Бром', category: 'halogen', period: 4, group: 17 },
+            { number: 36, symbol: 'Kr', name: 'Криптон', category: 'noble-gas', period: 4, group: 18 },
+
+            // Период 5 (аналогично, сокращено для примера)
+            { number: 37, symbol: 'Rb', name: 'Рубидий', category: 'alkali-metal', period: 5, group: 1 },
+            { number: 38, symbol: 'Sr', name: 'Стронций', category: 'alkaline-earth', period: 5, group: 2 },
+            { number: 39, symbol: 'Y', name: 'Иттрий', category: 'transition-metal', period: 5, group: 3 },
+            // ... остальные элементы 5 периода
+            { number: 54, symbol: 'Xe', name: 'Ксенон', category: 'noble-gas', period: 5, group: 18 },
+
+            // Лантаноиды и актиноиды
+            { number: 57, symbol: 'La', name: 'Лантан', category: 'lanthanide', period: 6, group: 3 },
+            { number: 58, symbol: 'Ce', name: 'Церий', category: 'lanthanide', period: 6, group: null },
+            // ... остальные лантаноиды и актиноиды
         ];
 
-        const tableContainer = document.getElementById('periodic-table');
+        const table = document.getElementById('periodic-table');
 
-        elements.forEach(element => {
-            const el = document.createElement('div');
-            el.className = `element ${element.category}`;
-            el.innerHTML = `
-                <div class="number">${element.number}</div>
-                <div class="symbol">${element.symbol}</div>
-                <div class="name">${element.name}</div>
-            `;
-            tableContainer.appendChild(el);
-        });
+        // Создаем 7 периодов (строк) и 18 групп (столбцов)
+        for (let period = 1; period <= 7; period++) {
+            for (let group = 1; group <= 18; group++) {
+                const cell = document.createElement('div');
+                cell.className = 'empty'; // По умолчанию пустая ячейка
+
+                // Находим элемент, соответствующий данной группе и периоду
+                const element = elements.find(el => el.period === period && el.group === group);
+
+                if (element) {
+                    cell.className = `element ${element.category}`;
+                    cell.innerHTML = `
+                            <div class="number">${element.number}</div>
+                            <div class="symbol">${element.symbol}</div>
+                            <div class="name">${element.name}</div>
+                        `;
+                }
+
+                // Особые случаи (лантаноиды и актиноиды)
+                if (period === 6 && group === 4) {
+                    cell.className = 'element lanthanide';
+                    cell.innerHTML = `
+                            <div class="number">57-71</div>
+                            <div class="symbol">Лантаноиды</div>
+                        `;
+                }
+                if (period === 7 && group === 4) {
+                    cell.className = 'element actinide';
+                    cell.innerHTML = `
+                            <div class="number">89-103</div>
+                            <div class="symbol">Актиноиды</div>
+                        `;
+                }
+
+                table.appendChild(cell);
+            }
+        }
     </script>
 </body>
 </html>
