@@ -10,21 +10,29 @@
             margin: 20px;
         }
 
-        .periodic-table {
-            background-image: url("C:\Users\rls\source\repos\MendeleevTable\img\background.jpg"); /*#e7edbe; dark*/
-            background-size: cover; /* растянуть на весь блок */
-            background-position: center; /* выравнивание по центру */
-            background-repeat: no-repeat; /* без повторения */
-            display: grid;
+        /*.periodic-table {
+            background-image: url("C:\Users\rls\source\repos\MendeleevTable\img\background.jpg");*/ /*#e7edbe; dark*/
+            /*background-size: cover;*/ /* растянуть на весь блок */
+            /*background-position: center;*/ /* выравнивание по центру */
+            /*background-repeat: no-repeat;*/ /* без повторения */
+            /*display: grid;
             grid-template-columns: repeat(18, 70px);
             grid-template-rows: repeat(7, 75px);
             gap: 5px;
             margin: 20px auto;
-            max-width: calc(18 * 75px);
+            max-width: calc(18 * 75px);*/
             /*background-image: linear-gradient(#ffffff, #ffffff);*/
-            background-color: #ffffff;
+            /*background-color: #ffffff;*/
             /*padding: 10px;*/
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            /*box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }*/
+        .periodic-table {
+            display: grid;
+            grid-template-columns: 50px repeat(18, 65px);
+            grid-template-rows: 30px repeat(9, 80px);
+            gap: 2px;
+            margin: 20px auto;
+            width: max-content;
         }
         /*.periodic-table {
             background-color: #e5ddd5;*/  /*Цвет фона WhatsApp */
@@ -33,10 +41,10 @@
             border-radius: 8px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }*/
-        .element {
+        /*.element {
             --element-color: #ffffff;
-            border: 1px solid transparent; /*Прозрачная граница по умолчанию*/ /*#ccc;*/
-            border-radius: 4px;
+            border: 1px solid transparent;*/ /*Прозрачная граница по умолчанию*/ /*#ccc;*/
+            /*border-radius: 4px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -48,7 +56,22 @@
             background-color: rgba(0,0,0,0.7);
             --webkitt-transition: all 0.3s ease;
             -moz-transition: all 0.3s ease;
+        }*/
+        .element {
+            border: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 3px;
+            font-size: 12px;
         }
+
+            .element .symbol {
+                font-weight: bold;
+                font-size: 16px;
+                margin: 2px 0;
+            }
 
             /* Эффект при наведении */
             .element:hover 
@@ -219,16 +242,16 @@
             height: 30px;
             align-self: center;
         }
-        /* Стили для заголовков */
+        /* Заголовки */
         .corner {
-            grid-area: 1 / 1; /* Левый верхний угол */
+            grid-area: 1 / 1;
+            background: #f5f5f5;
         }
 
         .group-header {
-            grid-row: 1;
             text-align: center;
             font-weight: bold;
-            background: #f0f0f0;
+            background: #f5f5f5;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -240,9 +263,8 @@
             align-items: center;
             justify-content: flex-end;
             padding-right: 10px;
-            background: #f0f0f0;
+            background: #f5f5f5;
         }
-
         /* Пустые ячейки для выравнивания */
         .empty 
         {
@@ -1723,8 +1745,7 @@
             // Добавляем номер периода
             const periodLabel = document.createElement('div');
             periodLabel.className = 'period-label';
-            periodLabel.textContent = period <= 7 ? period :
-                (period === 8 ? 'Лант.' : 'Актин.');
+            periodLabel.textContent = period; // period <= 7 ? period : (period === 8 ? 'Лант.' : 'Актин.');
             periodLabel.style.gridColumn = 1;
             periodLabel.style.gridRow = period + 1;
             table.appendChild(periodLabel);
